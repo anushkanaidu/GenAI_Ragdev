@@ -3,6 +3,8 @@
 **Assignment 2: RAG System Development**  
 **Anushka Naidu | Seattle University | MS in Data Science**
 
+**Live demo:** [buddy-rag.streamlit.app](https://buddy-rag.streamlit.app)
+
 ## 1. Project Overview
 
 Buddy is an AI-powered HR assistant that answers employee questions using company policy documents.
@@ -30,15 +32,17 @@ Buddy loads the HR documents, splits them into smaller chunks, and converts them
 | Vector database | Chroma |
 | Embeddings | Hugging Face `all-MiniLM-L6-v2` |
 | LLM | Groq `openai/gpt-oss-20b` |
-| Chunking | 400 characters, 50 overlap |
+| Chunking | 400 characters, 50 overlap (29 chunks) |
 | Retrieval | Top 3 chunks, cosine similarity |
 | Temperature | 0 |
 
-I used LangChain's `RecursiveCharacterTextSplitter` to keep related policy information together. Each chunk also keeps its original document name so Buddy can display the sources.
+I used LangChain's `RecursiveCharacterTextSplitter` to keep related policy information together. It splits on section headings first, so each policy rule (like "Carryover" or "Sick leave") usually stays in one chunk, and the 50-character overlap keeps sentences near a chunk boundary from being lost. Each chunk also keeps its original document name so Buddy can display the sources.
 
 I instructed the LLM to answer only from the retrieved information and acknowledge when the answer is not available.
 
 My original Buddy used `llama-3.1-8b-instant`, but I switched to `openai/gpt-oss-20b` when the earlier model was no longer available.
+
+In the app, Buddy shows its answer, the source documents, and the retrieved chunks with their similarity scores. There is also an option to show the pure LLM answer (no retrieval) next to it for comparison.
 
 ## 3. Documents and Testing
 
@@ -98,7 +102,10 @@ I also reviewed the answers manually.
 | PTO days | 20 days — correct | 15 days — incorrect |
 | UK background checks | Credence — correct | Backgrounds — incorrect |
 | Manager meetings | Friday — correct | Tuesday — incorrect |
+| Tool Onboarding deadline | Day 1 — incorrect (actual: 14 days) | 5 business days — incorrect |
 | Paid parental leave | Says information is unavailable | Invented 12 weeks |
+
+The full comparison of all 10 questions is in `results/comparison_table.md`.
 
 RAG performed better because it used company-specific information. The pure LLM often gave confident answers that were not supported by the policies.
 
@@ -128,6 +135,10 @@ Overall, RAG improved Buddy's answers, but it did not completely eliminate mista
 
 ## 7. How to Run
 
+You can try Buddy without installing anything at [buddy-rag.streamlit.app](https://buddy-rag.streamlit.app).
+
+To run it locally:
+
 ```bash
 conda create -n buddyrag python=3.11 -y
 conda activate buddyrag
@@ -143,9 +154,9 @@ GROQ_API_KEY=your_api_key_here
 Then run:
 
 ```bash
-python evaluate.py --retrieval
-python evaluate.py
-streamlit run app.py
+python evaluate.py --retrieval   # retrieval metrics only (no API key needed)
+python evaluate.py               # retrieval + RAG vs. pure LLM comparison
+streamlit run app.py             # Buddy app
 ```
 
 The evaluation results are saved in `results/`.
