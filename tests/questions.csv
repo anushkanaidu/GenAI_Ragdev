@@ -1,0 +1,11 @@
+id,question,type,relevant_docs,expected_keywords
+Q1,How many PTO days do I get per year?,Simple fact,01_pto_policy.md,20
+Q2,Which company runs background checks for employees in the UK?,Specific detail,02_background_verification.md,Credence
+Q3,Which trainings do I have to finish and by when?,List + deadline,05_mandatory_training.md,AI Ethics|14
+Q4,When are my 1-on-1 meetings with my manager?,Simple fact,06_one_on_ones.md,Friday
+Q5,My laptop stopped working. Who should I contact?,Procedure,04_it_support.md,it-support
+Q6,What do I need to finish before my first day?,Multi-document,02_background_verification.md;07_onboarding_stages.md,background
+Q7,Which tools will I use and by when must I finish Tool Onboarding?,Multi-document,03_tools_and_access.md;05_mandatory_training.md,Slack|14
+Q8,How long do I have to submit an expense report?,Procedure,09_expense_reimbursement.md,30
+Q9,If I start on March 10 when does my health insurance begin?,Reasoning,10_benefits.md,April 1
+Q10,How many weeks of paid parental leave do I get?,Out of scope (not in documents),,ABSTAIN
